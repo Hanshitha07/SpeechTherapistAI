@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Therapy Exercises</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gradient-start: #8e2de2;
+      --gradient-end: #4a00e0;
+      --neon-pink: #ff00ff;
+      --dark-bg: #000000;
+      --card-bg: rgba(30, 0, 60, 0.7);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--dark-bg);
+      color: white;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .progress {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin-bottom: 1rem;
+    }
+    
+    .exercises-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    
+    .exercise-card {
+      flex: 1;
+      min-width: 300px;
+      max-width: 500px;
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 30px rgba(142, 45, 226, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .exercise-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 40px rgba(142, 45, 226, 0.5);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-icon {
+      font-size: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .target-word {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--neon-pink);
+    }
+    
+    .balloon-container {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    
+    .balloon {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ff00ff, #8e2de2);
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+      transition: transform 0.5s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem auto;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(142, 45, 226, 0.6);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-glow {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(142, 45, 226, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(142, 45, 226, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(142, 45, 226, 0); }
+    }
+    
+    .countdown {
+      font-size: 3rem;
+      font-weight: 900;
+      text-align: center;
+      margin: 1rem 0;
+      height: 4rem;
+      color: var(--neon-pink);
+    }
+    
+    .feedback {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .good {
+      color: #4ade80;
+    }
+    
+    .medium {
+      color: #eab308;
+    }
+    
+    .bad {
+      color: #ef4444;
+    }
+    
+    .results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .result-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+    
+    .result-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 0.3rem;
+    }
+    
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    @media (max-width: 768px) {
+      .exercises-container {
+        flex-direction: column;
+      }
+      
+      .exercise-card {
+        min-width: 100%;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mouth Positioning & Breathing</h1>
+      <div class="progress">Progress: <span id="progress-count">0</span>/5</div>
+      <p>Goal: Improve muscle control + breath support (critical for fluency)</p>
+    </header>
+    
+    <div class="exercises-container">
+      <!-- Exercise 1: Blow the Balloon -->
+      <div class="exercise-card">
+        <div class="card-header">
+          <div class="card-icon">💨</div>
+          <h3 class="card-title">Blow the Balloon</h3>
+        </div>
+        
+        <p>Speak steadily to inflate the balloon. Keep your breath consistent!</p>
+        
+        <div class="target-word" id="balloon-word">Om</div>
+        
+        <div class="balloon-container">
+          <div class="balloon" id="balloon" style="transform: scale(0.5);">🎈</div>
+        </div>
+        
+        <button class="btn btn-glow" id="start-balloon">
+          <span>🎤</span> Start Speaking
+        </button>
+        
+        <div class="results">
+          <div class="result-card">
+            <div class="result-label">Breath Score</div>
+            <div class="result-value" id="breath-score">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Duration Held</div>
+            <div class="result-value" id="duration-held">0s</div>
+          </div>
+        </div>
+        
+        <div class="feedback" id="balloon-feedback">
+          Click "Start Speaking" to begin
+        </div>
+      </div>
+      
+      <!-- Exercise 2: Breath & Speak Yoga -->
+      <div class="exercise-card">
+        <div class="card-header">
+          <div class="card-icon">🧘‍♂</div>
+          <h3 class="card-title">Breath & Speak Yoga</h3>
+        </div>
+        
+        <p>Inhale deeply, then say the sentence in one smooth breath.</p>
+        
+        <div class="target-word">"I can speak fluently"</div>
+        
+        <div class="countdown" id="countdown"></div>
+        
+        <button class="btn" id="start-yoga">
+          <span>🫁</span> Begin Breathing Exercise
+        </button>
+        
+        <div class="results">
+          <div class="result-card">
+            <div class="result-label">Breath Control</div>
+            <div class="result-value" id="control-score">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Speech Duration</div>
+            <div class="result-value" id="speech-duration">0s</div>
+          </div>
+        </div>
+        
+        <div class="feedback" id="yoga-feedback">
+          Prepare to take a deep breath
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Speech Therapy Exercises - Fixed Version
+    const balloonWords = ["Om", "Ah", "Go", "Zoo", "Oooh"];
+    let currentProgress = 0;
+    let balloonSize = 0.5;
+    let isBalloonActive = false;
+    let startTime;
+    let speechRecognition;
+    let balloonCheckInterval;
+    
+    // DOM elements
+    const progressCount = document.getElementById('progress-count');
+    const balloonWordEl = document.getElementById('balloon-word');
+    const balloonEl = document.getElementById('balloon');
+    const breathScoreEl = document.getElementById('breath-score');
+    const durationHeldEl = document.getElementById('duration-held');
+    const balloonFeedback = document.getElementById('balloon-feedback');
+    const countdownEl = document.getElementById('countdown');
+    const controlScoreEl = document.getElementById('control-score');
+    const speechDurationEl = document.getElementById('speech-duration');
+    const yogaFeedback = document.getElementById('yoga-feedback');
+    
+    // Initialize exercises
+    function initExercises() {
+      balloonWordEl.textContent = balloonWords[Math.floor(Math.random() * balloonWords.length)];
+    }
+    
+    // Balloon Exercise - Fixed with proper speech detection
+    document.getElementById('start-balloon').addEventListener('click', async function() {
+      if (isBalloonActive) {
+        balloonFeedback.textContent = "Already listening... keep speaking!";
+        return;
+      }
+    
+      try {
+        // Request microphone permission
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(track => track.stop());
+        
+        startBalloonExercise();
+      } catch (error) {
+        balloonFeedback.textContent = "Microphone access denied. Please allow microphone access.";
+        balloonFeedback.className = "feedback bad";
+      }
+    });
+    
+    function startBalloonExercise() {
+      isBalloonActive = true;
+      balloonFeedback.textContent = "Speaking... Keep a steady voice!";
+      balloonFeedback.className = "feedback medium";
+      
+      // Reset balloon
+      balloonSize = 0.5;
+      balloonEl.style.transform = `scale(${balloonSize})`;
+      balloonEl.style.background = "radial-gradient(circle at 30% 30%, #ff00ff, #8e2de2)";
+      
+      // Start timer
+      startTime = new Date();
+      
+      // Initialize speech recognition
+      speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      speechRecognition.continuous = true;
+      speechRecognition.interimResults = true;
+      speechRecognition.lang = "en-US";
+      
+      let lastSpeechTime = Date.now();
+      let speaking = false;
+      
+      speechRecognition.onresult = function(event) {
+        const currentTime = new Date();
+        const duration = (currentTime - startTime) / 1000;
+        durationHeldEl.textContent = `${duration.toFixed(1)}s`;
+        
+        // Check if user is speaking
+        let hasSpeech = false;
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal || event.results[i][0].confidence > 0.7) {
+            hasSpeech = true;
+            break;
+          }
+        }
+        
+        if (hasSpeech) {
+          lastSpeechTime = Date.now();
+          speaking = true;
+          
+          // Grow balloon when speaking
+          if (balloonSize < 1.5) {
+            balloonSize += 0.03;
+            updateBalloon();
+          }
+        }
+      };
+      
+      // Check every 500ms if user stopped speaking
+      balloonCheckInterval = setInterval(function() {
+        const currentTime = new Date();
+        const duration = (currentTime - startTime) / 1000;
+        
+        // Shrink balloon if no speech detected for 1 second
+        if (Date.now() - lastSpeechTime > 1000 && speaking) {
+          if (balloonSize > 0.5) {
+            balloonSize -= 0.05;
+            updateBalloon();
+          }
+          speaking = false;
+        }
+        
+        // End conditions
+        if (duration > 15) {
+          endBalloonExercise(true, duration);
+        } else if (balloonSize <= 0.5) {
+          endBalloonExercise(false, duration);
+        }
+      }, 500);
+      
+      speechRecognition.onerror = function(event) {
+        console.error("Speech recognition error", event.error);
+        balloonFeedback.textContent = "Error: " + (event.error === 'no-speech' ? "No speech detected" : "Microphone issue");
+        balloonFeedback.className = "feedback bad";
+        endBalloonExercise(false, (new Date() - startTime) / 1000);
+      };
+      
+      speechRecognition.onend = function() {
+        if (isBalloonActive) {
+          speechRecognition.start();
+        }
+      };
+      
+      speechRecognition.start();
+    }
+    
+    function updateBalloon() {
+      balloonEl.style.transform = `scale(${balloonSize})`;
+      balloonEl.style.background = `radial-gradient(circle at 30% 30%, hsl(${300 + balloonSize * 30}, 100%, 70%), #8e2de2)`;
+    }
+    
+    function endBalloonExercise(success, duration) {
+      clearInterval(balloonCheckInterval);
+      isBalloonActive = false;
+      
+      if (speechRecognition) {
+        speechRecognition.stop();
+      }
+      
+      // Calculate scores
+      const breathScore = success ? Math.min(100, Math.floor(70 + duration * 2 + balloonSize * 10)) : Math.floor(duration * 5);
+      
+      // Update UI
+      breathScoreEl.textContent = breathScore;
+      durationHeldEl.textContent = `${duration.toFixed(1)}s`;
+      
+      if (success) {
+        balloonFeedback.innerHTML = "Great job! You maintained steady breath control 🎈";
+        balloonFeedback.className = "feedback good";
+        
+        if (breathScore >= 80) {
+          updateProgress();
+          balloonWordEl.textContent = balloonWords[Math.floor(Math.random() * balloonWords.length)];
+        }
+      } else {
+        balloonFeedback.innerHTML = "Keep practicing! Try to maintain consistent breath flow";
+        balloonFeedback.className = "feedback bad";
+      }
+    }
+    
+    // Yoga Exercise
+    document.getElementById('start-yoga').addEventListener('click', function() {
+      yogaFeedback.textContent = "Prepare to inhale deeply...";
+      yogaFeedback.className = "feedback medium";
+      
+      let count = 3;
+      countdownEl.textContent = count;
+      
+      const countdownInterval = setInterval(function() {
+        count--;
+        countdownEl.textContent = count > 0 ? count : "BREATHE OUT!";
+        
+        if (count <= 0) {
+          clearInterval(countdownInterval);
+          startYogaExercise();
+        }
+      }, 1000);
+    });
+    
+    function startYogaExercise() {
+      yogaFeedback.textContent = "Say: 'I can speak fluently' in one breath";
+      yogaFeedback.className = "feedback";
+      const start = Date.now();
+      
+      // Simulate speech recognition for demo
+      setTimeout(function() {
+        const duration = ((Date.now() - start) / 1000).toFixed(1);
+        const controlScore = Math.min(100, Math.floor(60 + Math.random() * 40));
+        
+        speechDurationEl.textContent = `${duration}s`;
+        controlScoreEl.textContent = controlScore;
+        
+        if (controlScore >= 85) {
+          yogaFeedback.innerHTML = "Excellent breath control! 🌊";
+          yogaFeedback.className = "feedback good";
+          updateProgress();
+        } else if (controlScore >= 70) {
+          yogaFeedback.innerHTML = "Good effort! Try for smoother flow 🌬";
+          yogaFeedback.className = "feedback medium";
+        } else {
+          yogaFeedback.innerHTML = "Practice more - you'll get better! 💨";
+          yogaFeedback.className = "feedback bad";
+        }
+        
+        countdownEl.textContent = "";
+      }, 3000);
+    }
+    
+    function updateProgress() {
+      if (currentProgress < 5) {
+        currentProgress++;
+        progressCount.textContent = currentProgress;
+        
+        // Visual celebration
+        if (currentProgress % 2 === 0) {
+          balloonEl.style.animation = "none";
+          setTimeout(() => {
+            balloonEl.style.animation = "pulse 0.5s 3";
+          }, 10);
+        }
+      }
+    }
+    
+    // Initialize the app
+    initExercises();
+  </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Word Pronunciation Progress</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #0f0f1a;
+      color: #f0eaff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #9f7aea;
+      margin-bottom: 2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    canvas {
+      background: #1a1a2e;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .entry {
+      background-color: #2a2a40;
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border-left: 6px solid #9f7aea;
+    }
+
+    .entry h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    .correct {
+      color: #7fff7f;
+    }
+
+    .incorrect {
+      color: #ff7f7f;
+    }
+
+    .back-btn, .clear-btn {
+      display: inline-block;
+      margin: 1rem 1rem 2rem 0;
+      padding: 0.6rem 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: #fff;
+      background-color: #9f7aea;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .clear-btn:hover {
+      background-color: #7c5bd3;
+    }
+
+    .back-btn {
+      background-color: #292945;
+    }
+
+    .back-btn:hover {
+      background-color: #3a3a5e;
+    }
+  </style>
+</head>
+<body>
+  <h1>📈 SpeechCraft Progress Dashboard</h1>
+  <div class="container">
+
+    <button class="clear-btn" onclick="clearProgress()">🗑️ Clear All Progress</button>
+    <a href="wordpro.html" class="back-btn">← Back to Word Practice</a>
+
+    <canvas id="resultChart"></canvas>
+    <canvas id="dailyChart"></canvas>
+
+    <div id="historyContainer"></div>
+  </div>
+
+  <script>
+    const historyData = JSON.parse(localStorage.getItem("wordGameHistory") || "[]");
+
+    function clearProgress() {
+      const confirmClear = confirm("Are you sure you want to clear all pronunciation history?");
+      if (confirmClear) {
+        localStorage.removeItem("wordGameHistory");
+        location.reload();
+      }
+    }
+
+    // Count correct vs incorrect
+    let correctCount = 0, incorrectCount = 0;
+    const dailyMap = {};
+
+    historyData.forEach(entry => {
+      if (entry.correct) correctCount++;
+      else incorrectCount++;
+
+      const day = new Date(entry.timestamp).toLocaleDateString();
+      if (!dailyMap[day]) dailyMap[day] = { correct: 0, incorrect: 0 };
+      if (entry.correct) dailyMap[day].correct++;
+      else dailyMap[day].incorrect++;
+    });
+
+    // --- Chart 1: Pie chart
+    const ctx1 = document.getElementById("resultChart").getContext("2d");
+    new Chart(ctx1, {
+      type: 'pie',
+      data: {
+        labels: ['Correct', 'Incorrect'],
+        datasets: [{
+          data: [correctCount, incorrectCount],
+          backgroundColor: ['#7fff7f', '#ff7f7f'],
+        }]
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Overall Pronunciation Accuracy',
+            color: '#f0eaff',
+            font: { size: 20 }
+          },
+          legend: {
+            labels: { color: '#f0eaff' }
+          }
+        }
+      }
+    });
+
+    // --- Chart 2: Daily bar chart
+    const dates = Object.keys(dailyMap);
+    const corrects = dates.map(d => dailyMap[d].correct);
+    const incorrects = dates.map(d => dailyMap[d].incorrect);
+
+    const ctx2 = document.getElementById("dailyChart").getContext("2d");
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: dates,
+        datasets: [
+          {
+            label: 'Correct',
+            data: corrects,
+            backgroundColor: '#7fff7f',
+          },
+          {
+            label: 'Incorrect',
+            data: incorrects,
+            backgroundColor: '#ff7f7f',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Daily Pronunciation Progress',
+            color: '#f0eaff',
+            font: { size: 20 }
+          },
+          legend: {
+            labels: { color: '#f0eaff' }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#f0eaff' }
+          },
+          y: {
+            ticks: { color: '#f0eaff' }
+          }
+        }
+      }
+    });
+
+    // --- History viewer
+    const historyContainer = document.getElementById("historyContainer");
+    if (historyData.length === 0) {
+      historyContainer.innerHTML = "<p>No history found yet. Start practicing! 🎤</p>";
+    } else {
+      historyData.reverse().forEach(entry => {
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.innerHTML = `
+          <h3>🗣️ Word: ${entry.word}</h3>
+          <p><strong>You said:</strong> ${entry.spoken}</p>
+          <p><strong>Feedback:</strong> ${entry.feedback}</p>
+          <p><strong>Result:</strong> <span class="${entry.correct ? 'correct' : 'incorrect'}">
+            ${entry.correct ? '✅ Correct' : '❌ Incorrect'}</span></p>
+          <p><em>${entry.timestamp}</em></p>
+        `;
+        historyContainer.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

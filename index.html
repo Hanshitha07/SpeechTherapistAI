@@ -1,19 +1,727 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Speech Practice App</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpeechCraft AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <style>
+    .feature-card.clickable {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card.clickable:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(155, 48, 255, 0.4);
+    }
+    /* Reset defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* General body styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
+  background-color: #0d0d0d;
+  color: white;
+}
+
+/* Navbar Styles */
+.navbar {
+  background: rgba(13, 13, 13, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 15px 40px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  height: 75px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar .logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #b84eff;
+  background: linear-gradient(135deg, #b84eff, #9b30ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar .menu {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .menu a {
+  margin-left: 30px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar .menu a:hover {
+  color: #b84eff;
+}
+
+.mobile-menu-btn {
+  display: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 75px;
+  left: 0;
+  width: 100%;
+  background: rgba(13, 13, 13, 0.95);
+  padding: 1rem 0;
+  z-index: 1000;
+}
+
+.mobile-menu a {
+  padding: 0.8rem 2rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu a:hover {
+  color: #b84eff;
+  background: rgba(184, 78, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+      padding: 15px 20px;
+  }
+  
+  .navbar .menu {
+      display: none;
+  }
+  
+  .mobile-menu-btn {
+      display: block;
+  }
+  
+  .mobile-menu {
+      display: flex;
+  }
+  
+  .mobile-menu.hidden {
+      display: none;
+  }
+}
+
+/* Hero Section */
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top left, #9b30ff, #3a0076, #0d0d0d);
+  text-align: center;
+  padding: 2rem;
+  margin-top: 75px;
+  animation: fadeIn 1.5s ease-out;
+}
+
+.hero h1 {
+  font-size: 3.2rem;
+  margin-bottom: 1rem;
+  animation: slideInDown 1s ease-out;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  max-width: 720px;
+  margin-bottom: 2rem;
+  color: #cccccc;
+  animation: fadeIn 2s ease-out;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1.2rem;
+}
+
+/* Button Styles */
+.primary-btn, .secondary-btn {
+  padding: 0.75rem 1.6rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #b84eff, #00d4ff);
+  color: white;
+  border: none;
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 2px solid #00d4ff;
+  color: #00d4ff;
+}
+
+.primary-btn:hover, .secondary-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.6);
+}
+
+/* Features Section */
+.features {
+  padding: 80px 20px;
+  text-align: center;
+  background-color: #0d0d0d;
+}
+
+.features h2 {
+  font-size: 2.5rem;
+  margin-bottom: 60px;
+  color: white;
+  font-weight: 600;
+  background: linear-gradient(135deg, #b84eff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: linear-gradient(135deg, #5f00ba, #1a1a1d);
+  color: #fff;
+  border-radius: 15px;
+  padding: 30px 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 35px rgba(166, 108, 255, 0.4);
+}
+
+.feature-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #b84eff;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+
+/* Section Styling */
+.section {
+  padding: 5rem 2rem;
+  text-align: center;
+  max-width: 960px;
+  margin: auto;
+  animation: fadeIn 1.5s ease forwards;
+  opacity: 0;
+}
+
+.section.dark {
+  background-color: #1a1a1a;
+}
+
+.section h2 {
+  font-size: 2.4rem;
+  color: #b84eff;
+  margin-bottom: 1rem;
+}
+
+.section p, .section li, .section ol {
+  color: #ccc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Footer Styling */
+.footer {
+  background-color: #111;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes slideInDown {
+  0% { opacity: 0; transform: translateY(-50px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeInUp {
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+/* Fade in on scroll */
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Auth Modal Styles */
+#auth-modal {
+  transition: opacity 0.3s ease;
+}
+
+#user-dropdown {
+  animation: fadeIn 0.3s ease;
+}
+
+.auth-error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .features h2 {
+      font-size: 2rem;
+      margin-bottom: 40px;
+  }
+
+  .feature-card {
+      padding: 25px 20px;
+  }
+
+  .feature-icon {
+      font-size: 40px;
+  }
+
+  .feature-card h3 {
+      font-size: 1.3rem;
+  }
+
+  .feature-card p {
+      font-size: 0.9rem;
+  }
+}
+  
+  </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Speech Pronunciation Practice</h1>
-    <input type="text" id="textInput" placeholder="Type a word or phrase" />
-    <button onclick="speakText()">🔊 Speak</button>
-    <button onclick="startListening()">🎙️ Listen</button>
-    <p id="result"></p>
+<body> 
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">SpeechCraft AI</div>
+      <div class="menu">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it Works</a>
+        <div id="auth-buttons">
+          <button id="login-btn" class="ml-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-1 px-4 rounded-lg hover:opacity-90 transition">Login</button>
+        </div>
+      </div>
+      <div class="mobile-menu-btn" id="menu-btn">☰</div>
+    </div>
+    <div class="mobile-menu hidden" id="mobile-menu">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it Works</a>
+      <button id="mobile-login-btn" class="text-left px-4 py-2 text-white">Login</button>
+    </div>
+  </nav> 
+  
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-gray-900 rounded-lg p-8 max-w-md w-full mx-4 border border-purple-500">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent" id="auth-modal-title">Login</h3>
+        <button id="close-auth-modal" class="text-gray-400 hover:text-white">&times;</button>
+      </div>
+      
+      <div id="auth-forms">
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="login-email" class="block text-gray-300 mb-2">Email</label>
+            <input type="email" id="login-email" required class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+          </div>
+          <div>
+            <label for="login-password" class="block text-gray-300 mb-2">Password</label>
+            <input type="password" id="login-password" required class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-lg hover:opacity-90 transition">Login</button>
+        </form>
+        
+        <!-- Signup Form (hidden by default) -->
+        <form id="signup-form" class="space-y-4 hidden">
+          <div>
+            <label for="signup-email" class="block text-gray-300 mb-2">Email</label>
+            <input type="email" id="signup-email" required class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+          </div>
+          <div>
+            <label for="signup-password" class="block text-gray-300 mb-2">Password</label>
+            <input type="password" id="signup-password" required class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+          </div>
+          <div>
+            <label for="signup-confirm-password" class="block text-gray-300 mb-2">Confirm Password</label>
+            <input type="password" id="signup-confirm-password" required class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white">
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 px-4 rounded-lg hover:opacity-90 transition">Sign Up</button>
+        </form>
+      </div>
+      
+      <div class="mt-4 text-center">
+        <p class="text-gray-400" id="auth-toggle-text">Don't have an account? <button id="auth-toggle-btn" class="text-purple-400 hover:text-purple-300">Sign up</button></p>
+      </div>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- User dropdown (shown when logged in) -->
+  <div id="user-dropdown" class="hidden fixed right-4 top-20 bg-gray-900 rounded-lg shadow-lg z-50 border border-purple-500 w-48">
+    <div class="p-4 border-b border-gray-800">
+      <p class="text-white font-medium" id="user-email"></p>
+    </div>
+    <div class="p-2">
+      <button id="logout-btn" class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg">Logout</button>
+    </div>
+  </div>
+  
+  <!-- 🌟 Hero Section -->
+  <section id="home" class="hero">
+    <h1>Empowering Speech, Enhancing Lives</h1>
+    <p>SpeechCraft AI helps people with speech disorders improve their communication through real-time feedback, personalized training, and gamified learning.</p>
+    <div class="cta-buttons">
+      <a href="tryit.html" class="primary-btn">Try It Now</a>
+      <a href="#" class="secondary-btn">Live Demo</a>
+    </div>
+  </section>
+
+  <!-- 🌟 About Section -->
+  <section id="about" class="section">
+    <h2>About SpeechCraft AI</h2>
+    <p>SpeechCraft AI is designed for individuals with speech impairments such as dyslexia, stuttering, and articulation disorders. It uses advanced AI to analyze speech patterns, provide real-time corrections, and track improvement over time.</p>
+  </section>
+
+  <!-- 🌟 Features Section -->
+  <section id="features" class="features">
+    <h2>SpeechCraft AI Features</h2>
+    <div class="features-grid">
+      <a href="tryit.html" class="feature-card clickable">
+        <div class="feature-icon">🎙️</div>
+        <h3>Real-time Analysis</h3>
+        <p>Instant feedback on speech clarity, speed, and pronunciation with AI-powered accuracy.</p>
+      </a>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Progress Tracking</h3>
+        <p>Detailed analytics and visualizations to track your improvement over time.</p>
+      </div>
+      <a href="gamescard.html" class="feature-card clickable">
+        <div class="feature-icon">🎮</div>
+        <h3>Gamified Learning</h3>
+        <p>Interactive exercises and rewards to make speech practice engaging and fun.</p>
+      </a>
+      <a href="practicepage.html" class="feature-card clickable">
+        <div class="feature-icon">🏆</div>
+        <h3>Skill Builder Levels</h3>
+        <p>Progressive challenges tailored to improve your speech step-by-step.</p>
+      </a>
+    </div>
+  </section>
+  
+  <!-- 🌟 How it Works Section -->
+  <section id="how" class="section">
+    <h2>How it Works</h2>
+    <ol>
+      <li>🎙️ Speak. 💡 Improve. 🏆 Shine.</li>
+      <li>Get instant feedback on clarity, speed & fillers</li>
+      <li>Talk your way to confidence.</li>
+    </ol>
+  </section>
+
+  <!-- 🌟 Footer -->
+  <footer id="contact" class="footer">
+    <p>Made with 💜 for HACKAZARDS'25 | SpeechCraft AI © 2025</p>
+  </footer>
+
+  <script>
+    // Replace this with YOUR actual config from Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCI5uCms9e4VSIAjz_peIdRwWbTtW9HWoA", // ← Must be valid
+  authDomain: "speechCraftAI.firebaseapp.com",
+  projectId: "speechcraftai",
+  storageBucket: "speechCraftAI.appspot.com",
+  messagingSenderId: "641976336967",
+  appId: "1:123456789012:web:abcd1234efgh5678"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Auth state observer
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in
+        document.getElementById('auth-buttons').innerHTML = `
+          <button id="user-profile-btn" class="ml-4 flex items-center space-x-2">
+            <span class="text-white">${user.email}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        `;
+        
+        // Update mobile menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        const logoutBtn = mobileMenu.querySelector('#mobile-logout-btn');
+        const loginBtn = mobileMenu.querySelector('#mobile-login-btn');
+        
+        if (loginBtn) loginBtn.remove();
+        if (!logoutBtn) {
+          mobileMenu.innerHTML += `
+            <button id="mobile-logout-btn" class="text-left px-4 py-2 text-white">Logout</button>
+          `;
+          document.getElementById('mobile-logout-btn').addEventListener('click', logout);
+        }
+        
+        // Add event listeners for the new buttons
+        document.getElementById('user-profile-btn').addEventListener('click', toggleUserDropdown);
+      } else {
+        // User is signed out
+        document.getElementById('auth-buttons').innerHTML = `
+          <button id="login-btn" class="ml-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-1 px-4 rounded-lg hover:opacity-90 transition">Login</button>
+        `;
+        
+        // Update mobile menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        const logoutBtn = mobileMenu.querySelector('#mobile-logout-btn');
+        const loginBtn = mobileMenu.querySelector('#mobile-login-btn');
+        
+        if (logoutBtn) logoutBtn.remove();
+        if (!loginBtn) {
+          mobileMenu.innerHTML += `
+            <button id="mobile-login-btn" class="text-left px-4 py-2 text-white">Login</button>
+          `;
+          document.getElementById('mobile-login-btn').addEventListener('click', openAuthModal);
+        }
+        
+        // Re-add event listeners
+        document.getElementById('login-btn').addEventListener('click', openAuthModal);
+      }
+    });
+
+    // Auth modal functionality
+    let isLoginForm = true;
+
+    function openAuthModal() {
+      document.getElementById('auth-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      // Clear any existing errors
+      document.querySelectorAll('.auth-error').forEach(el => el.remove());
+    }
+
+    function toggleAuthForms() {
+      isLoginForm = !isLoginForm;
+      
+      if (isLoginForm) {
+        document.getElementById('login-form').classList.remove('hidden');
+        document.getElementById('signup-form').classList.add('hidden');
+        document.getElementById('auth-modal-title').textContent = 'Login';
+        document.getElementById('auth-toggle-text').innerHTML = 'Don\'t have an account? <button id="auth-toggle-btn" class="text-purple-400 hover:text-purple-300">Sign up</button>';
+      } else {
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('signup-form').classList.remove('hidden');
+        document.getElementById('auth-modal-title').textContent = 'Sign Up';
+        document.getElementById('auth-toggle-text').innerHTML = 'Already have an account? <button id="auth-toggle-btn" class="text-purple-400 hover:text-purple-300">Login</button>';
+      }
+      
+      document.getElementById('auth-toggle-btn').addEventListener('click', toggleAuthForms);
+    }
+
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById('user-dropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#user-profile-btn') && !e.target.closest('#user-dropdown')) {
+        document.getElementById('user-dropdown').classList.add('hidden');
+      }
+    });
+
+    // Auth functions
+    function login(email, password) {
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          closeAuthModal();
+        })
+        .catch(error => {
+          showAuthError(error.message);
+        });
+    }
+
+    function signup(email, password) {
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          closeAuthModal();
+        })
+        .catch(error => {
+          showAuthError(error.message);
+        });
+    }
+
+    function logout() {
+      auth.signOut();
+      document.getElementById('user-dropdown').classList.add('hidden');
+    }
+
+    function showAuthError(message) {
+      // Remove any existing errors
+      document.querySelectorAll('.auth-error').forEach(el => el.remove());
+      
+      const errorElement = document.createElement('p');
+      errorElement.className = 'auth-error';
+      errorElement.textContent = message;
+      
+      const activeForm = isLoginForm ? 'login-form' : 'signup-form';
+      document.getElementById(activeForm).appendChild(errorElement);
+    }
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Scroll animations
+    const sections = document.querySelectorAll('.section');
+    function checkSections() {
+      const triggerBottom = window.innerHeight * 0.85;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if (sectionTop < triggerBottom) {
+          section.classList.add('visible');
+        }
+      });
+    }
+    window.addEventListener('scroll', checkSections);
+    checkSections();
+
+    // Feature card animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const featureCards = document.querySelectorAll('.feature-card');
+      featureCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.15}s`;
+        card.classList.add('animate-card');
+      });
+
+      // Auth event listeners
+      document.getElementById('login-btn')?.addEventListener('click', openAuthModal);
+      document.getElementById('mobile-login-btn')?.addEventListener('click', openAuthModal);
+      document.getElementById('close-auth-modal').addEventListener('click', closeAuthModal);
+      document.getElementById('auth-toggle-btn').addEventListener('click', toggleAuthForms);
+      document.getElementById('logout-btn').addEventListener('click', logout);
+      
+      // Login form
+      document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        login(email, password);
+      });
+      
+      // Signup form
+      document.getElementById('signup-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('signup-confirm-password').value;
+        
+        if (password !== confirmPassword) {
+          showAuthError("Passwords don't match");
+          return;
+        }
+        
+        signup(email, password);
+      });
+      
+      // Close modal when clicking outside
+      document.getElementById('auth-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('auth-modal')) {
+          closeAuthModal();
+        }
+      });
+    });
+    
+  </script>
 </body>
 </html>

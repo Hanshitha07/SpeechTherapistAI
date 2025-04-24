@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vowel Trainer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black min-h-screen text-white flex flex-col items-center justify-center px-4 py-10 font-sans">
+  <h1 class="text-4xl font-bold flex items-center gap-2 mb-10">
+    🎯 <span class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">Vowel Trainer</span>
+  </h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-6xl">
+    <!-- Left: Target Vowel Challenge -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-6">🎯 Target Vowel Challenge</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div id="cat-card" class="vowel-card"></div>
+        <div id="seat-card" class="vowel-card"></div>
+        <div id="hot-card" class="vowel-card"></div>
+        <div id="mood-card" class="vowel-card"></div>
+        <div id="bed-card" class="vowel-card"></div>
+        <div id="bit-card" class="vowel-card"></div>
+        <div id="but-card" class="vowel-card"></div>
+        <div id="boot-card" class="vowel-card"></div>
+      </div>
+    </div>
+
+    <!-- Right: Minimal Pairs Battle -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-6">⚔ Minimal Pairs Battle</h2>
+      <div class="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-lg">
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Select Pair:</label>
+          <select id="pair-selector" class="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+            <option value="ship,sheep">ship / sheep</option>
+            <option value="bit,beat">bit / beat</option>
+            <option value="cot,caught">cot / caught</option>
+            <option value="full,fool">full / fool</option>
+            <option value="bad,bed">bad / bed</option>
+            <option value="pull,pool">pull / pool</option>
+            <option value="hat,hot">hat / hot</option>
+            <option value="cup,cap">cup / cap</option>
+          </select>
+        </div>
+        <div class="flex gap-4 mb-4">
+          <button onclick="playMinimalPair()" class="bg-blue-500 text-white px-4 py-2 rounded hover:shadow-[0_0_10px_#3b82f6] transition">🔊 Play Words</button>
+          <button onclick="startBattleRecognition()" class="bg-green-500 text-white px-4 py-2 rounded hover:shadow-[0_0_10px_#22c55e] transition">🎤 Speak Both Words</button>
+        </div>
+        <div class="h-2 bg-gray-300/20 rounded w-full mb-4"></div>
+        <div id="battle-feedback" class="text-white text-sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Expanded word list with more vowel sounds
+    const words = [
+      'cat', 'seat', 'hot', 'mood', 'bed',
+      'bit', 'but', 'boot', 'bet', 'bat',
+      'bait', 'bite', 'boat', 'bought', 'book'
+    ];
+
+    // Initialize with first 8 words (or adjust as needed)
+    const initialWords = words.slice(0, 8);
+    
+    function createCard(word) {
+      const card = `
+        <div class="bg-gradient-to-br from-white/20 to-violet-300/10 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-2xl text-center hover:scale-[1.02] transition duration-300">
+          <h3 class="text-xl font-semibold mb-2">${word}</h3>
+          <div class="text-4xl mb-2">🗣</div>
+          <button onclick="playWord('${word}')" class="bg-blue-500 text-white w-full py-2 rounded mb-2 hover:shadow-[0_0_10px_#3b82f6] transition">🔊 Play</button>
+          <button onclick="startRecognition('${word}')" class="bg-green-500 text-white w-full py-2 rounded hover:shadow-[0_0_10px_#22c55e] transition">🎤 Speak</button>
+          <div id="feedback-${word}" class="text-sm mt-3 text-left text-white"></div>
+        </div>`;
+      document.getElementById(`${word}-card`).innerHTML = card;
+    }
+
+    // Create cards for initial words
+    initialWords.forEach(createCard);
+
+    function playWord(word) {
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.rate = 0.9; // Slightly slower for clarity
+      speechSynthesis.speak(utterance);
+    }
+
+    function startRecognition(expectedWord) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onresult = async (event) => {
+        const spokenWord = event.results[0][0].transcript.trim().toLowerCase();
+        const feedbackDiv = document.getElementById(`feedback-${expectedWord}`);
+
+        const feedbackText = `You said: "${spokenWord}". Expected: "${expectedWord}".`;
+        feedbackDiv.innerHTML = feedbackText;
+
+        const prompt = `You're a pronunciation coach. Give a short, simple feedback in 2-3 lines about the user's pronunciation of the word "${expectedWord}". They said "${spokenWord}". Be clear and encouraging. Only mention the main mistake if any, else say it's good.`;
+
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+            messages: [
+              { role: 'system', content: 'You are a helpful pronunciation tutor.' },
+              { role: 'user', content: prompt }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const aiFeedback = data.choices[0].message.content;
+        feedbackDiv.innerHTML += `<br><strong>Tips:</strong><br>${aiFeedback}`;
+      };
+
+      recognition.onerror = (e) => {
+        const feedbackDiv = document.getElementById(`feedback-${expectedWord}`);
+        feedbackDiv.innerHTML = `Error: ${e.error}`;
+      }
+    }
+
+    function playMinimalPair() {
+      const pairSelector = document.getElementById('pair-selector');
+      const pair = pairSelector.value.split(',');
+      
+      // Clear previous speech queue
+      speechSynthesis.cancel();
+      
+      // Speak with a small delay between words
+      pair.forEach((word, index) => {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.rate = 0.8; // Slower for minimal pairs
+        // Add delay between words
+        utterance.onstart = () => {
+          if (index > 0) speechSynthesis.pause();
+        };
+        utterance.onend = () => {
+          if (index < pair.length - 1) {
+            setTimeout(() => speechSynthesis.resume(), 800);
+          }
+        };
+        speechSynthesis.speak(utterance);
+      });
+    }
+
+    function startBattleRecognition() {
+      const pairSelector = document.getElementById('pair-selector');
+      const expectedPair = pairSelector.value.split(',');
+      
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 3; // Get more alternatives for better matching
+      recognition.start();
+
+      recognition.onresult = async (event) => {
+        const spoken = event.results[0][0].transcript.trim().toLowerCase();
+        const feedbackDiv = document.getElementById('battle-feedback');
+        feedbackDiv.innerHTML = `You said: "${spoken}".<br>`;
+
+        const prompt = `You're a pronunciation coach. The user was supposed to say both "${expectedPair[0]}" and "${expectedPair[1]}". 
+        They said: "${spoken}". 
+        Give short and accurate feedback in 2-3 lines about their pronunciation of both words. 
+        Focus on the vowel differences. Be clear and encouraging.`;
+
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+            messages: [
+              { role: 'system', content: 'You are a pronunciation and language learning tutor.' },
+              { role: 'user', content: prompt }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const aiFeedback = data.choices[0].message.content;
+        feedbackDiv.innerHTML += `<strong>Tips:</strong><br>${aiFeedback}`;
+      };
+
+      recognition.onerror = (e) => {
+        document.getElementById('battle-feedback').innerHTML = `Error: ${e.error}`;
+      }
+    }
+  </script>
+</body>
+</html>

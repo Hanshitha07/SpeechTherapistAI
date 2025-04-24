@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anti-Stammering Exercises</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neon-pink: #ec4899;
+      --neon-purple: #a855f7;
+      --electric-blue: #3b82f6;
+      --dark-bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.8);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--dark-bg);
+      color: white;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin-bottom: 1rem;
+    }
+    
+    .exercises-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    
+    .exercise-card {
+      flex: 1;
+      min-width: 300px;
+      max-width: 500px;
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .exercise-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(168, 85, 247, 0.4);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-icon {
+      font-size: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .phrase-display {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 2rem 0;
+      min-height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    .results {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .result-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    
+    .result-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 0.3rem;
+    }
+    
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .feedback {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .good {
+      background: rgba(74, 222, 128, 0.15);
+      color: #4ade80;
+    }
+    
+    .medium {
+      background: rgba(234, 179, 8, 0.15);
+      color: #eab308;
+    }
+    
+    .bad {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    
+    @media (max-width: 768px) {
+      .exercises-container {
+        flex-direction: column;
+      }
+      
+      .exercise-card {
+        min-width: 100%;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Anti-Stammering Exercises</h1>
+      <h2>Goal: Help users overcome common stammer triggers</h2>
+      <div class="progress">Progress: <span id="progress-count">0</span>/6</div>
+    </header>
+    
+    <div class="exercises-container">
+      <!-- Exercise 1: Green Light Phrases -->
+      <div class="exercise-card">
+        <div class="card-header">
+          <div class="card-icon">🚦</div>
+          <h3 class="card-title">Green Light Phrases</h3>
+        </div>
+        
+        <div class="phrase-display" id="green-light-phrase">Can I</div>
+        
+        <div class="instructions">
+          <p>Say this phrase 3 times in increasing speed without pauses.</p>
+        </div>
+        
+        <button class="btn" id="start-green-light">
+          <span>🎤</span> Start Speaking
+        </button>
+        
+        <div class="results">
+          <div class="result-card">
+            <div class="result-label">Fluency Score</div>
+            <div class="result-value" id="fluency-score">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Stutters Detected</div>
+            <div class="result-value" id="stutter-count">-</div>
+          </div>
+        </div>
+        
+        <div class="feedback" id="green-light-feedback">
+          Waiting for your attempt...
+        </div>
+      </div>
+      
+      <!-- Exercise 2: Mind Unlocker -->
+      <div class="exercise-card">
+        <div class="card-header">
+          <div class="card-icon">🧠</div>
+          <h3 class="card-title">Mind Unlocker</h3>
+        </div>
+        
+        <div class="phrase-display" id="mind-unlocker-phrase">Give me a glass of water</div>
+        
+        <div class="instructions">
+          <p>Say the sentence quickly when a word changes unexpectedly.</p>
+        </div>
+        
+        <button class="btn" id="start-mind-unlocker">
+          <span>🎤</span> Start Challenge
+        </button>
+        
+        <div class="results">
+          <div class="result-card">
+            <div class="result-label">Flexibility Score</div>
+            <div class="result-value" id="flexibility-score">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Pause Count</div>
+            <div class="result-value" id="pause-count">-</div>
+          </div>
+        </div>
+        
+        <div class="feedback" id="mind-unlocker-feedback">
+          Waiting for your attempt...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Common phrases for the exercises
+    const greenLightPhrases = ["Can I", "Please give me", "I want to"];
+    const mindUnlockerSentences = [
+      { original: "Give me a glass of water", replacements: ["fire", "idea", "cloud", "thought"] },
+      { original: "Pass me the yellow book", replacements: ["red", "loud", "happy", "invisible"] },
+      { original: "I need to buy milk", replacements: ["time", "courage", "sunlight", "dreams"] }
+    ];
+    
+    // DOM elements
+    const progressCount = document.getElementById('progress-count');
+    const greenLightPhraseEl = document.getElementById('green-light-phrase');
+    const mindUnlockerPhraseEl = document.getElementById('mind-unlocker-phrase');
+    const fluencyScoreEl = document.getElementById('fluency-score');
+    const stutterCountEl = document.getElementById('stutter-count');
+    const flexibilityScoreEl = document.getElementById('flexibility-score');
+    const pauseCountEl = document.getElementById('pause-count');
+    const greenLightFeedback = document.getElementById('green-light-feedback');
+    const mindUnlockerFeedback = document.getElementById('mind-unlocker-feedback');
+    
+    // Exercise state
+    let currentProgress = 0;
+    let currentGreenLightPhrase = '';
+    let currentMindUnlockerSentence = null;
+    let recognition = null;
+    
+    // Initialize exercises
+    function initExercises() {
+      // Set first green light phrase
+      currentGreenLightPhrase = greenLightPhrases[0];
+      greenLightPhraseEl.textContent = currentGreenLightPhrase;
+      
+      // Set first mind unlocker sentence
+      currentMindUnlockerSentence = mindUnlockerSentences[0];
+      mindUnlockerPhraseEl.textContent = currentMindUnlockerSentence.original;
+    }
+    
+    // Green Light Phrases exercise
+    document.getElementById('start-green-light').addEventListener('click', function() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Speech recognition not supported in your browser");
+        return;
+      }
+      
+      greenLightFeedback.textContent = "Listening... Speak the phrase 3 times";
+      greenLightFeedback.className = "feedback medium";
+      
+      // Simulate speech recognition results (in a real app, use actual Web Speech API)
+      setTimeout(() => {
+        // Generate random scores for demo purposes
+        const fluencyScore = Math.floor(70 + Math.random() * 30); // 70-100
+        const stutterCount = Math.floor(Math.random() * 3); // 0-2
+        
+        fluencyScoreEl.textContent = fluencyScore;
+        stutterCountEl.textContent = stutterCount;
+        
+        // Update feedback
+        if (fluencyScore >= 90 && stutterCount === 0) {
+          greenLightFeedback.textContent = "Perfect! 🟢";
+          greenLightFeedback.className = "feedback good";
+        } else if (fluencyScore >= 75 || stutterCount <= 1) {
+          greenLightFeedback.textContent = "Good, but can improve 🟡";
+          greenLightFeedback.className = "feedback medium";
+        } else {
+          greenLightFeedback.textContent = "Too many pauses 🔴";
+          greenLightFeedback.className = "feedback bad";
+        }
+        
+        // Update progress
+        if (fluencyScore >= 80) {
+          updateProgress();
+          rotateGreenLightPhrase();
+        }
+      }, 3000);
+    });
+    
+    // Mind Unlocker exercise
+    document.getElementById('start-mind-unlocker').addEventListener('click', function() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Speech recognition not supported in your browser");
+        return;
+      }
+      
+      // Show original phrase for 2 seconds, then change it
+      mindUnlockerFeedback.textContent = "Get ready...";
+      mindUnlockerFeedback.className = "feedback medium";
+      
+      setTimeout(() => {
+        const replacement = currentMindUnlockerSentence.replacements[
+          Math.floor(Math.random() * currentMindUnlockerSentence.replacements.length)
+        ];
+        const newPhrase = currentMindUnlockerSentence.original.replace(
+          /\w+$/, replacement
+        );
+        mindUnlockerPhraseEl.textContent = newPhrase;
+        
+        mindUnlockerFeedback.textContent = "Say it now!";
+        mindUnlockerFeedback.className = "feedback";
+        
+        // Simulate speech recognition results
+        setTimeout(() => {
+          // Generate random scores for demo purposes
+          const flexibilityScore = Math.floor(60 + Math.random() * 40); // 60-100
+          const pauseCount = Math.floor(Math.random() * 4); // 0-3
+          
+          flexibilityScoreEl.textContent = flexibilityScore;
+          pauseCountEl.textContent = pauseCount;
+          
+          // Update feedback
+          if (flexibilityScore >= 85 && pauseCount <= 1) {
+            mindUnlockerFeedback.textContent = "Great adaptability! 🟢";
+            mindUnlockerFeedback.className = "feedback good";
+          } else if (flexibilityScore >= 70 || pauseCount <= 2) {
+            mindUnlockerFeedback.textContent = "Good effort 🟡";
+            mindUnlockerFeedback.className = "feedback medium";
+          } else {
+            mindUnlockerFeedback.textContent = "Hesitation detected 🔴";
+            mindUnlockerFeedback.className = "feedback bad";
+          }
+          
+          // Update progress
+          if (flexibilityScore >= 75) {
+            updateProgress();
+            rotateMindUnlockerSentence();
+          }
+        }, 2000);
+      }, 2000);
+    });
+    
+    // Helper functions
+    function rotateGreenLightPhrase() {
+      const currentIndex = greenLightPhrases.indexOf(currentGreenLightPhrase);
+      const nextIndex = (currentIndex + 1) % greenLightPhrases.length;
+      currentGreenLightPhrase = greenLightPhrases[nextIndex];
+      greenLightPhraseEl.textContent = currentGreenLightPhrase;
+    }
+    
+    function rotateMindUnlockerSentence() {
+      const currentIndex = mindUnlockerSentences.indexOf(currentMindUnlockerSentence);
+      const nextIndex = (currentIndex + 1) % mindUnlockerSentences.length;
+      currentMindUnlockerSentence = mindUnlockerSentences[nextIndex];
+      mindUnlockerPhraseEl.textContent = currentMindUnlockerSentence.original;
+    }
+    
+    function updateProgress() {
+      if (currentProgress < 6) {
+        currentProgress++;
+        progressCount.textContent = currentProgress;
+      }
+    }
+    
+    // Initialize the app
+    initExercises();
+  </script>
+</body>
+</html>

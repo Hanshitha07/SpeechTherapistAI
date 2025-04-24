@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Speaking Practice</title>
+  <link rel="stylesheet" href="daily-practice.css">
+  
+  <style>
+    .recorder {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    #recordBtn {
+      background: #9f5cff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #recordBtn:hover {
+      background: #ae70ff;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #b2b2ff;
+    }
+
+    audio {
+      margin-top: 20px;
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💡 Daily Speaking Practice</h1>
+    <p>🧍 Self-introductions • 🎙 Storytelling</p>
+
+  <div id="recorder-container">
+    <button id="startBtn">🎙 Start Recording</button>
+    <button id="stopBtn" disabled>⏹ Stop Recording</button>
+    <div id="timer">⏱ 00:00</div>
+    <audio id="audioPlayback" controls style="margin-top: 1rem;"></audio>
+  </div>
+  
+  </div>
+
+ <script>
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const timerDisplay = document.getElementById('timer');
+    const audioPlayback = document.getElementById('audioPlayback');
+  
+    let mediaRecorder;
+    let audioChunks = [];
+    let timerInterval;
+    let seconds = 0;
+  
+    function startTimer() {
+      seconds = 0;
+      timerDisplay.textContent = '⏱ 00:00';
+      timerInterval = setInterval(() => {
+        seconds++;
+        let mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+        let secs = String(seconds % 60).padStart(2, '0');
+        timerDisplay.textContent = `⏱ ${mins}:${secs}`;
+      }, 1000);
+    }
+  
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+  
+    startBtn.addEventListener('click', async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+  
+      mediaRecorder.onstart = () => {
+        startTimer();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      };
+  
+      mediaRecorder.onstop = () => {
+        stopTimer();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+  
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const audioURL = URL.createObjectURL(audioBlob);
+        audioPlayback.src = audioURL;
+      };
+  
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+  
+      mediaRecorder.start();
+    });
+  
+    stopBtn.addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
+    });
+  </script> 
+  <div class="prompt-container">
+    <div class="prompt-category">
+    <h3>🗂 Choose a practice topic:</h3>
+    <div class="tags">
+      <button onclick="loadPrompt('selfIntro')">🧑 Self-introduction</button>
+      <button onclick="loadPrompt('storytelling')">🎙 Storytelling</button>
+      <button onclick="loadPrompt('describeImage')">🖼 Describe an Image</button>
+      <button onclick="loadPrompt('opinion')">💭 Share Your Opinion</button>
+    </div>
+ 
+  
+  <div class="prompt-box" id="prompt-box">
+    <p>Select a category to see your speaking prompt here...</p>
+  </div>
+</div> 
+  <script src="daily-practice.js"></script> 
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpeechCraft AI - Practice Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      padding: 2rem;
+    }
+
+    .top-bar {
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    .logo {
+      background: linear-gradient(to right, #a259ff, #3f87f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h1.title {
+      font-size: 2.5rem;
+      text-align: center;
+      color: #66b3ff;
+      margin-top: 2rem;
+    }
+
+    p.subtext {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+
+    .container {
+      padding-top: 30px;
+    }
+
+    .card {
+      background: rgba(162, 89, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 8px 30px rgba(160, 32, 240, 0.3);
+      padding: 2rem;
+      border-radius: 20px;
+      margin: 2rem auto;
+      max-width: 800px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 40px rgba(162, 89, 255, 0.5);
+    }
+
+    .card h2 {
+      display: flex;
+      align-items: center;
+      font-size: 1.8rem;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .card ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card ul li {
+      color: #e0e7ff;
+      margin-bottom: 0.5rem;
+    }
+
+    .start-btn {
+      display: inline-block;
+      text-decoration: none;
+      background-color: #a259ff;
+      color: white;
+      padding: 10px 22px;
+      font-weight: bold;
+      border-radius: 12px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .start-btn:hover {
+      background-color: #c084fc;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <span class="logo">SpeechCraft AI</span>
+  </div>
+
+  <h1 class="title">Speech Practice Games</h1>
+  <p class="subtext">Choose a game to improve your speech skills</p>
+
+  <div class="container">
+
+    <!-- Word Pronunciation Card -->
+    <div class="card">
+      <h2>🔤 Word Pronunciation</h2>
+      <ul>
+        <li>• Perfect for beginners – practice pronouncing individual words clearly.</li>
+        <li>• Boost your pronunciation skills by saying randomly picked words confidently! 💬</li>
+      </ul>
+      <a class="start-btn" href="wordpro.html">Start Beginner Game</a>
+    </div>
+
+    <!-- Conversation Practice Card -->
+    <div class="card">
+      <h2>🗣️ Conversation Practice</h2>
+      <ul>
+        <li>• Intermediate level – practice common conversational phrases.</li>
+        <li>• Simulate real-life talks with AI to improve fluency and flow. 🤖✨</li>
+      </ul>
+      <a class="start-btn" href="convogame.html">Start Conversation Game</a>
+    </div>
+
+    <!-- Tongue Twister Card -->
+    <div class="card">
+      <h2>😛 Tongue Twisters</h2>
+      <ul>
+        <li>• Advanced level – challenge your speech with tricky tongue twisters.</li>
+        <li>• Enhance clarity, rhythm, and articulation while having fun! 🔥</li>
+      </ul>
+      <a class="start-btn" href="tonguetwister.html">Start Twister Game</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

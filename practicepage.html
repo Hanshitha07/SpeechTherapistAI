@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpeechCraft AI - Practice Levels</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+  --violet: #8a2be2;
+  --violet-dark: #4b0082;
+  --violet-light: #9370db;
+  --blue: #6a5acd;
+  --black: #0f0f0f;
+  --gray: #e0e0e0;
+  --white: #ffffff;
+  --pink: #ff77ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--black);
+  color: var(--white);
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 60px;
+  text-align: center;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--violet), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 0 20px;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+}
+
+.level-card {
+  background: linear-gradient(145deg, #1a0f2f, #30194d); /* violet-black theme */
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid #5f2a9d;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(138, 43, 226, 0.2);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.level-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(172, 100, 255, 0.3);
+}
+
+.level-title {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+.level-subtitle {
+  font-size: 1.1rem;
+  color: var(--violet-light);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.level-description {
+  color: var(--gray);
+  margin-bottom: 25px;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.begin-btn {
+  background: linear-gradient(to right, #e29cff, #d87aff);
+  color: var(--black);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+  display: block;
+  margin-top: auto;
+  text-decoration: none;
+}
+
+.begin-btn:hover {
+  background: linear-gradient(to right, #ffb3ff, #c17fff);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  
+  .level-card {
+    padding: 25px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SpeechCraft AI</h1>
+    
+    <div class="levels-grid">
+      <!-- Level 1 -->
+      <div class="level-card">
+        <h2 class="level-title">Beginner</h2>
+        <h3 class="level-subtitle">Foundational Sounds</h3>
+        <p class="level-description">Master basic phonemes and simple words with clear articulation.</p>
+        <a href="level1practice.html" class="begin-btn">Start Level 1</a>
+      </div>
+      
+      <!-- Level 2 -->
+      <div class="level-card">
+        <h2 class="level-title">Intermediate</h2>
+        <h3 class="level-subtitle">Everyday Conversations</h3>
+        <p class="level-description">Practice common phrases and sentences with proper pacing and intonation.</p>
+        <a href="level2practice.html" class="begin-btn">Start Level 2</a>
+      </div>
+      
+      <!-- Level 3 -->
+      <div class="level-card">
+        <h2 class="level-title">Advanced</h2>
+        <h3 class="level-subtitle">Complex Speech Patterns</h3>
+        <p class="level-description">Challenge yourself with tongue twisters and professional speaking scenarios.</p>
+        <a href="level.html" class="begin-btn">Start Level 3</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

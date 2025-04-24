@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consonant Mastery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gradient-start: #8e2de2;
+      --gradient-end: #4a00e0;
+      --neon-pink: #ff00ff;
+      --dark-bg: #000000;
+      --card-bg: rgba(30, 0, 60, 0.7);
+      --success: #4ade80;
+      --warning: #facc15;
+      --error: #f87171;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--dark-bg);
+      color: white;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .progress {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      margin-bottom: 1rem;
+    }
+    
+    .goal {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .exercises-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    
+    .exercise-card {
+      flex: 1;
+      min-width: 300px;
+      max-width: 500px;
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 30px rgba(142, 45, 226, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .exercise-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 40px rgba(142, 45, 226, 0.5);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-icon {
+      font-size: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .target-phrase {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem auto;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(142, 45, 226, 0.6);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-glow {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(142, 45, 226, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(142, 45, 226, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(142, 45, 226, 0); }
+    }
+    
+    .difficulty-levels {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+    
+    .difficulty-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .difficulty-btn.active {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      font-weight: bold;
+    }
+    
+    .feedback {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .success {
+      color: var(--success);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+    
+    .warning {
+      color: var(--warning);
+      border: 1px solid rgba(250, 204, 21, 0.3);
+    }
+    
+    .error {
+      color: var(--error);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+    
+    .results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .result-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+    
+    .result-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 0.3rem;
+    }
+    
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    @media (max-width: 768px) {
+      .exercises-container {
+        flex-direction: column;
+      }
+      
+      .exercise-card {
+        min-width: 100%;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .target-phrase {
+        font-size: 1.4rem;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✅ 2. Consonants (<span id="progress-count">0</span>/3)</h1>
+      <div class="goal">Goal: Master tricky consonant sounds (like th, r, v, z, etc.)</div>
+    </header>
+    
+    <div class="exercises-container">
+      <!-- Exercise 1: Consonant Combos -->
+      <div class="exercise-card">
+        <div class="card-header">
+          <div class="card-icon">💥</div>
+          <h3 class="card-title">Consonant Combos</h3>
+        </div>
+        
+        <p>Pronounce these tricky consonant combinations clearly:</p>
+        
+        <div class="target-phrase" id="consonant-phrase">Thirty three thirsty thieves</div>
+        
+        <button class="btn btn-glow" id="speak-now-btn">
+          <span>🎤</span> Speak Now
+        </button>
+        
+        <div class="results">
+          <div class="result-card">
+            <div class="result-label">Clarity Score</div>
+            <div class="result-value" id="clarity-score">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Attempts</div>
+            <div class="result-value" id="attempt-count">0</div>
+          </div>
+        </div>
+        
+        <div class="feedback" id="consonant-feedback">
+          Click "Speak Now" to begin
+        </div>
+      </div>
+      
+      <!-- Exercise 2: Beat the Bot -->
+      <div class="exercise-card">
+        <div class="card-header">
+          <div class="card-icon">🔊</div>
+          <h3 class="card-title">Beat the Bot</h3>
+        </div>
+        
+        <p>Repeat the tongue twister after the bot. Can you match its speed?</p>
+        
+        <div class="target-phrase" id="tongue-twister">She sells sea shells by the sea shore</div>
+        
+        <div class="difficulty-levels">
+          <button class="difficulty-btn active" data-level="1">Easy</button>
+          <button class="difficulty-btn" data-level="2">Medium</button>
+          <button class="difficulty-btn" data-level="3">Hard</button>
+        </div>
+        
+        <button class="btn" id="play-bot-btn">
+          <span>▶</span> Play Bot
+        </button>
+        
+        <button class="btn" id="repeat-after-btn" disabled>
+          <span>🎤</span> Repeat After Bot
+        </button>
+        
+        <div class="results">
+          <div class="result-card">
+            <div class="result-label">Your Speed</div>
+            <div class="result-value" id="user-speed">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Bot Speed</div>
+            <div class="result-value" id="bot-speed">-</div>
+          </div>
+        </div>
+        
+        <div class="feedback" id="bot-feedback">
+          Select difficulty and click "Play Bot"
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Exercise data
+    const consonantPhrases = [
+      "Thirty three thirsty thieves",
+      "Vera's velvet vest",
+      "Red lorry, yellow lorry",
+      "Zebra zooms zealously"
+    ];
+    
+    const tongueTwisters = [
+      "She sells sea shells by the sea shore",
+      "Peter Piper picked a peck of pickled peppers",
+      "How can a clam cram in a clean cream can",
+      "Six slippery snails slid slowly seaward"
+    ];
+    
+    // State variables
+    let currentProgress = 0;
+    let currentDifficulty = 1;
+    let attemptCount = 0;
+    let botPlaybackRate = 1;
+    let recognition;
+    
+    // DOM elements
+    const progressCountEl = document.getElementById('progress-count');
+    const consonantPhraseEl = document.getElementById('consonant-phrase');
+    const clarityScoreEl = document.getElementById('clarity-score');
+    const attemptCountEl = document.getElementById('attempt-count');
+    const consonantFeedback = document.getElementById('consonant-feedback');
+    const tongueTwisterEl = document.getElementById('tongue-twister');
+    const userSpeedEl = document.getElementById('user-speed');
+    const botSpeedEl = document.getElementById('bot-speed');
+    const botFeedback = document.getElementById('bot-feedback');
+    const repeatAfterBtn = document.getElementById('repeat-after-btn');
+    
+    // Initialize exercises
+    function initExercises() {
+      // Set random phrases
+      consonantPhraseEl.textContent = consonantPhrases[
+        Math.floor(Math.random() * consonantPhrases.length)
+      ];
+      
+      tongueTwisterEl.textContent = tongueTwisters[
+        Math.floor(Math.random() * tongueTwisters.length)
+      ];
+      
+      // Set up difficulty buttons
+      document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentDifficulty = parseInt(this.dataset.level);
+        });
+      });
+    }
+    
+    // Exercise 1: Consonant Combos
+    document.getElementById('speak-now-btn').addEventListener('click', function() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Speech recognition not supported in your browser");
+        return;
+      }
+      
+      consonantFeedback.textContent = "Listening... Speak clearly now";
+      consonantFeedback.className = "feedback warning";
+      
+      recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      
+      recognition.onresult = function(event) {
+        const userSpeech = event.results[0][0].transcript.toLowerCase();
+        const targetPhrase = consonantPhraseEl.textContent.toLowerCase();
+        const criticalConsonants = getCriticalConsonants(targetPhrase);
+        
+        // Check for missing consonants
+        const missingConsonants = criticalConsonants.filter(consonant => 
+          !userSpeech.includes(consonant)
+        );
+        
+        attemptCount++;
+        attemptCountEl.textContent = attemptCount;
+        
+        if (missingConsonants.length > 0) {
+          const consonantList = missingConsonants.map(c => '${c}').join(', ');
+          consonantFeedback.innerHTML = `Try again — you missed the ${consonantList} sound`;
+          consonantFeedback.className = "feedback error";
+          
+          // Generate random clarity score (lower for errors)
+          clarityScoreEl.textContent = Math.floor(30 + Math.random() * 50);
+        } else {
+          consonantFeedback.innerHTML = "Perfect Pronunciation! 🔥";
+          consonantFeedback.className = "feedback success";
+          
+          // Generate random clarity score (higher for success)
+          clarityScoreEl.textContent = Math.floor(80 + Math.random() * 20);
+          
+          // Update progress
+          if (Math.random() > 0.5) { // 50% chance to progress for demo
+            updateProgress();
+          }
+          
+          // Change phrase for next attempt
+          consonantPhraseEl.textContent = consonantPhrases[
+            Math.floor(Math.random() * consonantPhrases.length)
+          ];
+        }
+      };
+      
+      recognition.onerror = function(event) {
+        consonantFeedback.textContent = "Error: " + event.error;
+        consonantFeedback.className = "feedback error";
+      };
+      
+      recognition.start();
+    });
+    
+    function getCriticalConsonants(phrase) {
+      // Extract the critical consonants we want to check for
+      const consonants = [];
+      
+      if (phrase.includes('th')) consonants.push('th');
+      if (phrase.includes('v')) consonants.push('v');
+      if (phrase.includes('z')) consonants.push('z');
+      if (phrase.includes('r')) consonants.push('r');
+      if (phrase.includes('l')) consonants.push('l');
+      
+      return consonants;
+    }
+    
+    // Exercise 2: Beat the Bot
+    document.getElementById('play-bot-btn').addEventListener('click', function() {
+      const phrase = tongueTwisterEl.textContent;
+      
+      // Set playback rate based on difficulty
+      botPlaybackRate = currentDifficulty * 0.8;
+      const botSpeed = Math.floor(currentDifficulty * 2.5);
+      
+      botFeedback.textContent = `Bot speaking at level ${currentDifficulty}...`;
+      botFeedback.className = "feedback warning";
+      botSpeedEl.textContent = botSpeed;
+      
+      // Enable repeat button
+      repeatAfterBtn.disabled = false;
+      
+      // Simulate bot speaking (in a real app, use SpeechSynthesis)
+      setTimeout(() => {
+        botFeedback.textContent = "Your turn! Click 'Repeat After Bot'";
+        botFeedback.className = "feedback";
+      }, 2000);
+    });
+    
+    document.getElementById('repeat-after-btn').addEventListener('click', function() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Speech recognition not supported in your browser");
+        return;
+      }
+      
+      botFeedback.textContent = "Listening... Repeat the phrase";
+      botFeedback.className = "feedback warning";
+      
+      recognition = new (window.webkitSpeechRecognition || window.SpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternates = 1;
+      
+      recognition.onresult = function(event) {
+        const userSpeech = event.results[0][0].transcript;
+        const duration = event.results[0][0].duration;
+        
+        // Calculate user speed (words per second)
+        const wordCount = tongueTwisterEl.textContent.split(' ').length;
+        const userSpeed = Math.floor(wordCount / (duration / 1000));
+        
+        userSpeedEl.textContent = userSpeed;
+        
+        // Determine if user matched bot speed
+        const botSpeed = parseInt(botSpeedEl.textContent);
+        const speedDifference = Math.abs(userSpeed - botSpeed);
+        
+        if (speedDifference <= 2) {
+          botFeedback.innerHTML = `Matched Level ${currentDifficulty}! 🚀`;
+          botFeedback.className = "feedback success";
+          
+          // Update progress
+          if (currentDifficulty === 3 && Math.random() > 0.7) {
+            updateProgress();
+          }
+        } else if (userSpeed > botSpeed) {
+          botFeedback.innerHTML = `You were faster! 🏎 (Level ${currentDifficulty + 1} unlocked)`;
+          botFeedback.className = "feedback success";
+          
+          // Unlock next difficulty if possible
+          if (currentDifficulty < 3) {
+            document.querySelector(`.difficulty-btn[data-level="${currentDifficulty + 1}"]`).click();
+          }
+        } else {
+          botFeedback.innerHTML =` Bot was faster — try again 💡 (${botSpeed - userSpeed} wps slower)`;
+          botFeedback.className = "feedback error";
+        }
+        
+        // Change tongue twister for next round
+        tongueTwisterEl.textContent = tongueTwisters[
+          (tongueTwisters.indexOf(tongueTwisterEl.textContent) + 1) % tongueTwisters.length
+        ];
+      };
+      
+      recognition.onerror = function(event) {
+        botFeedback.textContent = "Error: " + event.error;
+        botFeedback.className = "feedback error";
+      };
+      
+      recognition.start();
+    });
+    
+    function updateProgress() {
+      if (currentProgress < 3) {
+        currentProgress++;
+        progressCountEl.textContent = currentProgress;
+      }
+    }
+    
+    // Initialize the app
+    initExercises();
+  </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confidence Talk Zone</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <style>
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a0a0a;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+.container {
+  padding: 40px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+h1 {
+  text-align: center;
+  color: #b279ff;
+  font-size: 2rem;
+  margin-bottom: 40px;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.card {
+  background: linear-gradient(145deg, #1f1a2e, #351d52);
+  border: 1px solid #9f5cff40;
+  border-radius: 18px;
+  padding: 30px 30px 20px;
+  color: white;
+  box-shadow: 0 0 15px #9f5cff33;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 24px #ae70ff;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.card p {
+  margin: 6px 0;
+  font-size: 1rem;
+  color: #d1c6e0;
+}
+
+.card button {
+  margin-top: 20px;
+  background: #9f5cff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card button:hover {
+  background: #b279ff;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🗣 Confidence Talk Zone</h1>
+    <div class="card-container">
+      
+      <a href="daily-practice.html" class="card">
+        <h2>💡 Daily Speaking Practice</h2>
+        <p>✨ Improve your comfort in daily talk.</p>
+        <p>🧍 Self-intros • 🎙 Storytelling</p>
+        <button>Start Practice</button>
+      </a>
+
+      <a href="roleplay.html" class="card">
+        <h2>🎭 Roleplay Practice</h2>
+        <p>✨ Real-life scenarios to boost confidence.</p>
+        <p>🍽 Café Order • 📞 Phone Call • 💼 Interview</p>
+        <button class="start-roleplay">Start Roleplay</button>
+      </a>
+    </div>
+</div>
+</body>
+</html>

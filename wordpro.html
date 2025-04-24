@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpeechCraft AI - Word Pronunciation Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1f0036, #3d0066);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(18px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #e3d1ff;
+    }
+
+    select, button {
+      padding: 12px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    select {
+      background-color: #000;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 1rem;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20fill%3D'%23fff'%20height%3D'24'%20viewBox%3D'0%200%2024%2024'%20width%3D'24'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position-x: 95%;
+      background-position-y: center;
+      cursor: pointer;
+    }
+
+    select option {
+      background-color: #000;
+      color: #fff;
+    }
+
+    button:hover {
+      background-color: #7e22ce;
+      transform: scale(1.05);
+    }
+
+    .word-box {
+      margin: 20px 0;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    .mic-button {
+      margin-top: 20px;
+      background: linear-gradient(145deg, #9333ea, #6b21a8);
+      border: none;
+      color: white;
+      padding: 20px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.4s ease;
+      box-shadow: 0 0 25px rgba(147, 51, 234, 0.4);
+    }
+
+    .mic-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 35px rgba(147, 51, 234, 0.7);
+    }
+
+    .feedback {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .progress {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: #e3d1ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎤 SpeechCraft AI - Word Game</h1>
+    <select id="difficulty">
+      <option value="easy">🟢 Easy</option>
+      <option value="medium">🟠 Medium</option>
+      <option value="hard">🔴 Hard</option>
+    </select>
+    <button onclick="generateWord()">🎲 New Word</button>
+    <div class="word-box" id="wordDisplay">Tap 'New Word'</div>
+    <button class="mic-button" onclick="startRecording()">🎙️</button>
+    <div class="feedback" id="feedback"></div>
+    <div class="progress" id="progress">Progress: 0/0 Correct</div>
+    <a href="progressWP.html">
+      <button class="btn">📜 View All Progress</button>
+    </a>
+  </div>
+
+  <script>
+    const easyWords = ['cat', 'dog', 'sun', 'book', 'fish', 'tree', 'cup', 'pen', 'rain', 'star', 'hat', 'ball', 'milk', 'shoe', 'cake', 'bus', 'car', 'bed', 'chair', 'lamp'];
+  const mediumWords = ['bottle', 'garden', 'window', 'pencil', 'planet', 'river', 'yellow', 'purple', 'people', 'elephant', 'camera', 'school', 'computer', 'rocket', 'banana', 'cookie', 'jungle', 'animal', 'travel', 'kitchen'];
+  const hardWords = ['technology', 'pronunciation', 'environment', 'communication', 'consciousness', 'algorithm', 'temperature', 'imagination', 'refrigerator', 'photosynthesis', 'acknowledgment', 'entrepreneur', 'psychology', 'neuroscience', 'infrastructure', 'characteristic', 'miscellaneous', 'extraordinary', 'hypothesis'];
+
+  let currentWord = "";
+  let correctCount = 0;
+  let totalCount = 0;
+
+  function generateWord() {
+    const difficulty = document.getElementById("difficulty").value;
+    let wordList = [];
+
+    if (difficulty === "easy") wordList = easyWords;
+    else if (difficulty === "medium") wordList = mediumWords;
+    else wordList = hardWords;
+
+    currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+    document.getElementById("wordDisplay").textContent = currentWord;
+    document.getElementById("feedback").textContent = "";
+  }
+
+  function startRecording() {
+    if (!currentWord) return alert("Please generate a word first!");
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+    recognition.start();
+
+    recognition.onresult = async (event) => {
+      const spoken = event.results[0][0].transcript;
+      const feedback = await getGroqFeedback(currentWord, spoken);
+      document.getElementById("feedback").innerHTML = feedback;
+
+      const isCorrect = spoken.toLowerCase() === currentWord.toLowerCase();
+      updateProgress(isCorrect);
+      saveProgressToHistory(currentWord, spoken, feedback, isCorrect);
+    };
+
+    recognition.onerror = (err) => {
+      alert("Speech Recognition Error: " + err.error);
+    };
+  }
+
+  async function getGroqFeedback(expected, spoken) {
+    const prompt = `
+You are a speech therapist AI giving feedback to users practicing pronunciation.
+
+Expected word: "${expected}"  
+User said: "${spoken}"
+
+Give accurate feedback in 2-3 short sentences:
+- If correct: say it's correct with a cheerful tone and 1-2 emojis.
+- If wrong or unclear: explain what was wrong (e.g., wrong word or unclear pronunciation), suggest improvement, and still encourage them nicely with 1-2 emojis.
+Be honest, helpful, and motivating. Do not say it's correct if it's wrong.
+`;
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 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"
+      },
+      body: JSON.stringify({
+        model: "meta-llama/llama-4-scout-17b-16e-instruct",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 60,
+        temperature: 0.7
+      })
+    });
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  }
+
+  function updateProgress(isCorrect) {
+    if (isCorrect) correctCount++;
+    totalCount++;
+    document.getElementById("progress").textContent = `Progress: ${correctCount}/${totalCount} Correct`;
+  }
+
+  function saveProgressToHistory(word, spoken, feedback, correct) {
+    const record = {
+      word,
+      spoken,
+      feedback,
+      correct,
+      timestamp: new Date().toLocaleString()
+    };
+
+    const existing = JSON.parse(localStorage.getItem("wordGameHistory") || "[]");
+    existing.push(record);
+    localStorage.setItem("wordGameHistory", JSON.stringify(existing));
+  }
+  </script>
+</body>
+</html>

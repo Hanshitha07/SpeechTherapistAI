@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpeechAce - Speaking Skills Practice</title>
+  <style>
+    :root {
+      --primary: #6b5bff;
+      --primary-dark: #4b3df0;
+      --secondary: #f5f7ff;
+      --accent: #ff6b35;
+      --dark: #1a1a1a;
+      --light: #ffffff;
+      --gray: #a0aec0;
+      --light-gray: #e2e8f0;
+      --gradient-main: linear-gradient(to right, #8e2de2, #4a00e0);
+      --gradient-box: linear-gradient(145deg, #ffffff10, #00000040);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0f0f0f;
+      color: var(--light);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: var(--dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .main-content {
+      display: flex;
+      gap: 30px;
+    }
+
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(160deg, #000, #1a1a1a);
+      border-radius: 15px;
+      padding: 25px 20px;
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+    }
+
+    .sidebar h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: var(--primary);
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--light-gray);
+    }
+
+    .level-category h3 {
+      font-size: 16px;
+      color: var(--gray);
+      margin-bottom: 15px;
+    }
+
+    .level-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      background: var(--gradient-box);
+      color: white;
+      backdrop-filter: blur(5px);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+    }
+
+    .level-item:hover {
+      background: var(--gradient-main);
+      color: #fff;
+      transform: translateX(8px) scale(1.02);
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+    }
+
+    .level-progress {
+      font-size: 14px;
+      color: #d1d5db;
+    }
+
+    .level-item:hover .level-progress {
+      color: white;
+    }
+
+    .content-area {
+      flex: 1;
+      background-color: #1c1c1c;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.03);
+    }
+
+    .welcome-message {
+      text-align: center;
+      padding: 60px 0;
+    }
+
+    .welcome-message h1 {
+      font-size: 34px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .welcome-message p {
+      font-size: 18px;
+      color: var(--gray);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">SpeechAce</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="main-content">
+      <div class="sidebar">
+        <h2>Speaking skills</h2>
+        <div class="level-category">
+          <h3>Levels</h3>
+          <div class="level-item" onclick="window.location.href='level1.html'">
+            <span>Vowels</span>
+            <span class="level-progress">0/5</span>
+          </div>
+          <div class="level-item" onclick="window.location.href='level11.html'">
+            <span>Consonants</span>
+            <span class="level-progress">0/3</span>
+          </div>
+          <div class="level-item" onclick="window.location.href='breathing.html'">
+            <span>Mouth positioning & Breathing exercises</span>
+            <span class="level-progress">0/5</span>
+          </div>
+          <div class="level-item" onclick="window.location.href='level12.html'">
+            <span>Anti-stammering phrases</span>
+            <span class="level-progress">0/6</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="welcome-message">
+          <h1>Welcome to Speaking Practice</h1>
+          <p>Select a level from the sidebar to begin your speaking practice. Each level contains exercises designed to improve specific aspects of your pronunciation and fluency.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

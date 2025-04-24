@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpeechCraft AI - Speak & Get Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #8a2be2;
+      --violet-dark: #4b0082;
+      --violet-light: #9370db;
+      --black: #0f0f0f;
+      --gray: #ccc;
+      --white: #ffffff;
+      --accent: #ff6347;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, var(--violet), var(--violet-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+      text-align: center;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .box {
+      background: linear-gradient(135deg, var(--violet-dark), var(--black));
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 900px;
+      transition: 0.3s ease-in-out;
+    }
+
+    .box:hover {
+      transform: scale(1.02);
+    }
+
+    .box label {
+      display: block;
+      margin: 20px 0 10px;
+      font-weight: 600;
+      color: var(--violet-light);
+      font-size: 1.1rem;
+    }
+
+    .box textarea,
+    .box select {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      resize: vertical;
+      font-size: 1rem;
+      background-color: #1a1a1a;
+      color: var(--white);
+      margin-bottom: 15px;
+      transition: background-color 0.3s;
+    }
+
+    .box textarea:focus,
+    .box select:focus {
+      background-color: var(--violet-dark);
+    }
+
+    .box button {
+      background: var(--violet);
+      border: none;
+      padding: 12px 25px;
+      color: white;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-right: 10px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .box button:hover {
+      background: var(--violet-light);
+    }
+
+    .box button:active {
+      transform: scale(0.95);
+    }
+
+    .box button .icon {
+      margin-right: 8px;
+    }
+
+    .output {
+      margin-top: 25px;
+      padding: 20px;
+      background-color: #1f1f1f;
+      border-radius: 12px;
+      white-space: pre-line;
+      min-height: 100px;
+      transition: background-color 0.3s ease;
+    }
+
+    .feedback-positive {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .feedback-negative {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .buttons {
+      margin-top: 15px;
+    }
+
+    @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .box {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>SpeechCraft AI</h1>
+
+  <div class="box">
+    <label for="topic">Choose Topic:</label>
+    <select id="topic">
+      <option value="technology">Technology</option>
+      <option value="environment">Environment</option>
+      <option value="space">Space</option>
+      <option value="education">Education</option>
+      <option value="health">Health & Wellness</option>
+      <option value="personal-growth">Personal Growth</option>
+      <option value="current-events">Current Events</option>
+      <option value="history">History</option>
+      <option value="art">Art & Culture</option>
+      <option value="science">Science & Innovation</option>
+    </select>
+    
+
+    <div class="buttons">
+      <button onclick="generateParagraph()">
+        <span class="icon">🎯</span> Generate Example Para
+      </button>
+      <button onclick="startRecording()">
+        <span class="icon">🎤</span> Speak Paragraph
+      </button>
+      <button onclick="getFeedback()">
+        <span class="icon">🧠</span> Get AI Feedback
+      </button>
+    </div>
+
+    <label for="example">Example Paragraph:</label>
+    <div id="example" class="output">Example paragraph will appear here...</div>
+
+    <label for="transcript">Your Spoken Paragraph:</label>
+    <textarea id="transcript" rows="4" placeholder="Your speech will appear here..."></textarea>
+
+    <label for="feedback">Feedback:</label>
+    <div id="feedback" class="output">AI feedback will appear here...</div>
+  </div>
+
+  <script>
+    const transcriptBox = document.getElementById("transcript");
+    const feedbackBox = document.getElementById("feedback");
+    const exampleBox = document.getElementById("example");
+
+    const GROQ_API_KEY = "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";
+
+    async function generateParagraph() {
+      const topic = document.getElementById("topic").value;
+
+      const prompt = `Generate a simple and clear paragraph for speech practice on the topic "${topic}". It should be easy to understand for someone with dyslexia.`;
+
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const para = data.choices[0].message.content.trim();
+      exampleBox.innerText = para;
+    }
+
+    function startRecording() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript;
+        transcriptBox.value = speechResult;
+      };
+
+      recognition.onerror = (event) => {
+        alert("Speech recognition error: " + event.error);
+      };
+    }
+
+    async function getFeedback() {
+      const spokenPara = transcriptBox.value.trim();
+      const topic = document.getElementById("topic").value;
+      if (!spokenPara) {
+        alert("Please speak or enter a paragraph first!");
+        return;
+      }
+
+      const prompt = `Provide clear and helpful feedback on the following spoken paragraph. Focus on pronunciation, fluency, clarity, and pacing. Imagine the user is someone with dyslexia who needs gentle guidance and make it short and sharp:\n\n"${spokenPara}"`;
+
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const feedback = data.choices[0].message.content.trim();
+      feedbackBox.innerText = feedback;
+
+      // Enhance feedback visualization
+      feedbackBox.classList.add(feedback.includes("good") ? 'feedback-positive' : 'feedback-negative');
+
+      // Save progress to localStorage
+      const savedFeedback = JSON.parse(localStorage.getItem("speechcraft_feedback")) || [];
+
+      savedFeedback.push({
+        topic,
+        paragraph: spokenPara,
+        feedback,
+        timestamp: new Date().toISOString()
+      });
+
+      localStorage.setItem("speechcraft_feedback", JSON.stringify(savedFeedback));
+    }
+  </script>
+</body>
+</html>

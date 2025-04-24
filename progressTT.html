@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My SpeechCraft Progress</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, violet, deeppink);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .entry {
+      background: #1c1c1c;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+    }
+
+    .entry small {
+      color: #aaa;
+      display: block;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      background: violet;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: mediumorchid;
+    }
+
+    .back {
+      display: block;
+      margin: 30px auto 10px;
+      text-align: center;
+    }
+
+    canvas {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 40px;
+      max-width: 100%;
+    }
+
+    .chart-container {
+      margin-bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📖 Your SpeechCraft Progress</h1>
+
+<div class="chart-container">
+  <canvas id="accuracyChart" height="100"></canvas>
+</div>
+<div class="chart-container">
+  <canvas id="badgeChart" height="100"></canvas>
+</div>
+
+<div id="progressList"></div>
+
+<div class="back">
+  <a href="tonguetwister.html">
+    <button>⬅️ Back to Game</button>
+  </a>
+</div>
+
+<button onclick="resetProgress()" style="margin: 1rem; padding: 0.5rem 1rem; background-color: crimson; color: white; border: none; border-radius: 8px; cursor: pointer;">Reset Progress</button>
+
+<script>
+  const list = document.getElementById("progressList");
+  const history = JSON.parse(localStorage.getItem("twister_history")) || [];
+
+  let scores = [], labels = [], badges = { Master: 0, Tamer: 0, None: 0 };
+
+  if (history.length === 0) {
+    list.innerHTML = "<p>No progress yet! Play the game to start tracking.</p>";
+  } else {
+    history.reverse().forEach(entry => {
+      const score = entry.score || 0;
+      const twister = entry.twister || "N/A";
+      const spoken = entry.spoken || "N/A";
+      const feedback = entry.feedback || "N/A";
+      const time = entry.timestamp ? new Date(entry.timestamp).toLocaleString() : "N/A";
+
+      scores.push(score);
+      labels.push(new Date(entry.timestamp).toLocaleDateString("en-IN", { day: "numeric", month: "short" }));
+
+      if (score >= 85) badges.Master++;
+      else if (score >= 65) badges.Tamer++;
+      else badges.None++;
+
+      list.innerHTML += `
+        <div class="entry">
+          <strong>🌀 Tongue Twister:</strong><br>${twister}<br><br>
+          <strong>🗣️ You Said:</strong><br>${spoken}<br><br>
+          <strong>🧠 AI Feedback:</strong><br>${feedback}
+          <small>🕒 ${time}</small>
+        </div>
+      `;
+    });
+
+    new Chart(document.getElementById("accuracyChart"), {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Accuracy Over Time",
+          data: scores,
+          borderColor: "violet",
+          backgroundColor: "rgba(238,130,238,0.2)",
+          tension: 0.3,
+          fill: true,
+          pointRadius: 5
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            suggestedMin: 0,
+            suggestedMax: 100,
+            ticks: {
+              color: "#fff"
+            }
+          },
+          x: {
+            ticks: {
+              color: "#fff"
+            }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: "#fff" } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("badgeChart"), {
+      type: "pie",
+      data: {
+        labels: ["Twister Master 🏅", "Tongue Tamer 🎖️", "Keep Practicing 💡"],
+        datasets: [{
+          label: "Badges Earned",
+          data: [badges.Master, badges.Tamer, badges.None],
+          backgroundColor: ["#9b59b6", "#8e44ad", "#d2b4de"],
+          borderColor: "#fff",
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              color: "#fff",
+              font: {
+                size: 14
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function resetProgress() {
+    if (confirm("Are you sure you want to reset all progress?")) {
+      localStorage.removeItem("twister_history");
+      location.reload();
+    }
+  }
+</script>
+</body>
+</html>
