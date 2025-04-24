@@ -72,4 +72,5 @@ To experience **SpeechCraft AI** in action, check out this [Demo Video](#).
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone https://github.com/Hanshitha07/SpeechCraft-AI.git
+   https://github.com/Hanshitha07/SpeechcraftAI
+
