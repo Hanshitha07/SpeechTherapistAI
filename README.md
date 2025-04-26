@@ -33,7 +33,7 @@ Each game is specifically crafted to boost articulation skills, fluency, and con
 
 ## 🚀 Demo
 
-To experience **SpeechCraft AI** in action, check out this [Demo Video](#).
+To experience **SpeechCraft AI** in action, check out this https://youtu.be/J1Doc6awR8M.
 
 ---
 
